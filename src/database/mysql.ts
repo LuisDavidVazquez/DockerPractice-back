@@ -5,6 +5,11 @@ import { Signale } from "signale";
 dotenv.config();
 const signale = new Signale();
 
+signale.info("Connecting to DB with the following credentials:");
+signale.info(`Host: ${process.env.DB_HOST}`);
+signale.info(`User: ${process.env.DB_USER}`);
+signale.info(`Database: ${process.env.DB_DATABASE}`);
+
 const config = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -40,12 +45,16 @@ export async function initializePaymentTable() {
 export async function query(sql: string, params: any[]) {
   try {
     const conn = await pool.getConnection();
-    signale.success("Successful connection to database");
+    signale.success("Conexión exitosa a la base de datos");
+
+    // Puedes añadir esta línea para verificar la conexión
+    signale.info("Conexión establecida correctamente a la base de datos.");
+
     const result = await conn.execute(sql, params);
     conn.release();
     return result;
   } catch (error) {
-    signale.error(error);
+    signale.error("Error en la conexión a la base de datos:", error);
     return null;
   }
 }
